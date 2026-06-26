@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>AI生图系统配置</title>
+<title>AI生图管理员配置原型</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
@@ -24,13 +24,6 @@
     --shadow-sm:0 1px 2px rgba(0,0,0,.04); --shadow:0 8px 24px rgba(0,0,0,.10);
     --radius:8px; --radius-lg:12px;
   }
-  body[data-theme="gen"]{
-    --brand:#d9642f; --brand-hover:#bf5525; --brand-soft:#fdf1e9; --brand-soft-2:#fdf8f3;
-  }
-  body[data-theme="operation"]{
-    --brand:#2b5cff; --brand-hover:#1d4ae8; --brand-soft:#eaf0ff; --brand-soft-2:#f4f7ff;
-  }
-
   .topbar{
     height:56px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;
     padding:0 20px;position:sticky;top:0;z-index:20;
@@ -40,8 +33,6 @@
     width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--brand),var(--brand-hover));
     display:grid;place-items:center;color:#fff;font-weight:800;box-shadow:0 2px 8px rgba(43,92,255,.18);
   }
-  .brand-sub{color:var(--text-3);font-weight:500;font-size:12px}
-  .topbar-tip{margin-left:auto;font-size:12px;color:var(--text-3)}
 
   .layout{display:flex;min-height:calc(100vh - 56px)}
   .sidebar{
@@ -65,7 +56,6 @@
   .main{flex:1;min-width:0;max-width:1440px;padding:20px 24px 40px}
   .page-header{margin-bottom:16px}
   .page-title{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:700;color:var(--text-1)}
-  .page-tag{padding:3px 8px;border-radius:999px;background:var(--brand-soft);color:var(--brand);font-size:12px;font-weight:600}
   .page-desc{margin-top:8px;color:var(--text-2);line-height:1.7}
   .page-note{
     margin-top:10px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:#fff;
@@ -88,7 +78,6 @@
   textarea{height:auto;padding:10px 11px;min-height:110px;resize:vertical}
   .input:hover,.select:hover,textarea:hover{border-color:var(--border-2)}
   .input:focus,.select:focus,textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(43,92,255,.10)}
-  body[data-theme="gen"] .input:focus,body[data-theme="gen"] .select:focus,body[data-theme="gen"] textarea:focus{box-shadow:0 0 0 3px rgba(217,100,47,.12)}
   .select{
     appearance:none;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23c9cdd4' d='M5 6 0 0h10z'/%3E%3C/svg%3E");
@@ -277,15 +266,14 @@
   }
 </style>
 </head>
-<body data-theme="operation">
+<body>
   <div class="toast-wrap" id="toastWrap"></div>
 
   <header class="topbar">
     <div class="brand">
       <div class="brand-logo">AI</div>
       <div>
-        AI生图系统配置
-        <div class="brand-sub">模型配置管理 · 纯原型版</div>
+        AI生图管理员配置原型
       </div>
     </div>
   </header>
@@ -295,26 +283,25 @@
       <div class="side-title">页面入口</div>
       <button class="side-item" data-version="gen">
         <span class="dot"></span>
-        <span>美工版模型配置</span>
+        <span>美工管理员配置</span>
       </button>
       <button class="side-item active" data-version="operation">
         <span class="dot"></span>
-        <span>运营版模型配置</span>
+        <span>运营管理员配置</span>
       </button>
       <div class="side-desc">
         本原型通过左侧导航模拟两个独立页面入口。<br>
-        实际开发时，应拆分为<strong>美工版</strong>与<strong>运营版</strong>两个独立页面/路由。
+        实际开发时，应拆分为<strong>美工管理员配置</strong>与<strong>运营管理员配置</strong>两个独立页面/路由。
       </div>
     </aside>
 
     <main class="main">
       <section class="page-header">
         <div class="page-title">
-          <span id="pageTitle">运营版模型配置</span>
-          <span class="page-tag" id="pageTag">ai_image_operation_model_config</span>
+          <span id="pageTitle">运营管理员配置</span>
         </div>
         <div class="page-desc" id="pageDesc">
-          由产品经理徐强统一配置，其他人请勿动谢谢，排序默认按更新时间倒排
+          由指定管理员统一配置，其他人请勿动谢谢，排序默认按更新时间倒排
         </div>
       </section>
 
@@ -330,7 +317,7 @@
               <input class="input" id="qUserName" placeholder="请输入完整用户名" />
             </div>
             <div class="form-item">
-              <label>供应商</label>
+              <label>生图模型</label>
               <select class="select" id="qProvider"></select>
             </div>
             <div class="form-item">
@@ -386,7 +373,7 @@
                 <th style="width:72px">ID</th>
                 <th style="width:110px">用户ID</th>
                 <th style="width:130px">用户名</th>
-                <th style="width:140px">供应商</th>
+                <th style="width:140px">生图模型</th>
                 <th style="width:230px">appKey</th>
                 <th style="width:640px">quota</th>
                 <th style="width:90px">状态</th>
@@ -415,10 +402,10 @@
   </div>
 
   <div class="mask" id="viewMask"></div>
-  <aside class="drawer" id="viewDrawer">
+  <aside class="drawer" id="viewDrawer" role="dialog" aria-modal="true" aria-labelledby="viewDrawerTitle" aria-hidden="true">
     <div class="drawer-header">
-      <div class="drawer-title">查看配置 <span class="tag" id="viewVersionTag">运营版</span></div>
-      <button class="drawer-close" data-close="view">✕</button>
+      <div class="drawer-title" id="viewDrawerTitle">查看配置 <span class="tag" id="viewVersionTag">运营管理员配置</span></div>
+      <button class="drawer-close" data-close="view" aria-label="关闭查看配置">✕</button>
     </div>
     <div class="drawer-body" id="viewBody"></div>
     <div class="drawer-footer">
@@ -428,10 +415,10 @@
   </aside>
 
   <div class="mask" id="formMask"></div>
-  <aside class="drawer" id="formDrawer">
+  <aside class="drawer" id="formDrawer" role="dialog" aria-modal="true" aria-labelledby="formDrawerTitle" aria-hidden="true">
     <div class="drawer-header">
-      <div class="drawer-title"><span id="formTitle">新增配置</span> <span class="tag" id="formVersionTag">运营版</span></div>
-      <button class="drawer-close" data-close="form">✕</button>
+      <div class="drawer-title" id="formDrawerTitle"><span id="formTitle">新增配置</span> <span class="tag" id="formVersionTag">运营管理员配置</span></div>
+      <button class="drawer-close" data-close="form" aria-label="关闭配置表单">✕</button>
     </div>
     <div class="drawer-body">
       <div class="section">
@@ -446,7 +433,7 @@
             <input class="input" id="fUserId" placeholder="请输入用户ID" />
           </div>
           <div class="form-item" id="fiProvider">
-            <label><span class="req">*</span>供应商 <span class="field-meta badge" id="badgeProvider" style="display:none">只读</span></label>
+            <label><span class="req">*</span>生图模型 <span class="field-meta badge" id="badgeProvider" style="display:none">只读</span></label>
             <select class="select" id="fProvider"></select>
           </div>
           <div class="form-item" id="fiUserName">
@@ -511,13 +498,13 @@
   </aside>
 
   <div class="mask" id="batchMask"></div>
-  <aside class="drawer" id="batchDrawer">
+  <aside class="drawer" id="batchDrawer" role="dialog" aria-modal="true" aria-labelledby="batchDrawerTitle" aria-hidden="true">
     <div class="drawer-header">
-      <div class="drawer-title">按 appKey 批量更新 <span class="tag" id="batchVersionTag">运营版</span></div>
-      <button class="drawer-close" data-close="batch">✕</button>
+      <div class="drawer-title" id="batchDrawerTitle">按 appKey 批量更新 <span class="tag" id="batchVersionTag">运营管理员配置</span></div>
+      <button class="drawer-close" data-close="batch" aria-label="关闭批量更新">✕</button>
     </div>
     <div class="drawer-body">
-      <div class="warn-box">本操作按 appKey 命中记录后，对命中的 quota 做整包覆盖。请确认 appKey 与供应商条件无误后再提交。</div>
+      <div class="warn-box">本操作按 appKey 命中记录后，对命中的 quota 做整包覆盖。请确认 appKey 与生图模型条件无误后再提交。</div>
 
       <div class="section" style="margin-top:18px">
         <div class="section-title">命中条件</div>
@@ -527,9 +514,9 @@
             <input class="input" id="bAppKey" placeholder="请输入 appKey" />
           </div>
           <div class="form-item">
-            <label>供应商</label>
+            <label>生图模型</label>
             <select class="select" id="bProvider"></select>
-            <div class="field-meta">可选，不选则命中该 appKey 下全部供应商配置。</div>
+            <div class="field-meta">可选，不选则命中该 appKey 下全部生图模型配置。</div>
           </div>
         </div>
       </div>
@@ -559,7 +546,7 @@
         </div>
 
         <div class="quota-panel" id="batchQuotaJsonPanel" style="display:none">
-          <textarea class="input quota-json" id="bQuotaJson" placeholder='请输入合法 JSON，例如：&#10;{&#10;  "total": 100,&#10;  "scene": 3&#10;}'></textarea>
+          <textarea class="input quota-json" id="bQuotaJson" placeholder='请输入合法 JSON，例如：&#10;{&#10;  "total": 20,&#10;  "scene": 3&#10;}'></textarea>
         </div>
 
         <div class="hint">
@@ -575,9 +562,9 @@
   </aside>
 
   <div class="mask" id="deleteMask"></div>
-  <div class="modal" id="deleteModal">
+  <div class="modal" id="deleteModal" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle" aria-hidden="true">
     <div class="modal-body">
-      <div class="modal-title">删除配置</div>
+      <div class="modal-title" id="deleteModalTitle">删除配置</div>
       <div class="modal-desc" id="deleteDesc">确认删除该条配置吗？删除后不可恢复。</div>
     </div>
     <div class="modal-footer">
@@ -598,14 +585,12 @@
 
   const VERSION_META = {
     gen: {
-      label: "美工版",
-      table: "ai_image_gen_model_config",
-      desc: "由产品经理徐强统一配置，其他人请勿动谢谢，排序默认按更新时间倒排"
+      label: "美工管理员配置",
+      desc: "由指定管理员统一配置，其他人请勿动谢谢，排序默认按更新时间倒排"
     },
     operation: {
-      label: "运营版",
-      table: "ai_image_operation_model_config",
-      desc: "由产品经理徐强统一配置，其他人请勿动谢谢，排序默认按更新时间倒排"
+      label: "运营管理员配置",
+      desc: "由指定管理员统一配置，其他人请勿动谢谢，排序默认按更新时间倒排"
     }
   };
 
@@ -631,7 +616,8 @@
     viewingId: null,
     deletingId: null,
     formQuotaMode: "structured",
-    batchQuotaMode: "structured"
+    batchQuotaMode: "structured",
+    lastFocusedElement: null
   };
 
   const $ = (sel) => document.querySelector(sel);
@@ -662,21 +648,30 @@
 
   function providerLabel(code){
     const found = PROVIDERS.find(x => String(x.code) === String(code));
-    return found ? found.name : `未知供应商（${code}）`;
+    return found ? found.name : `未知生图模型（${code}）`;
+  }
+
+  function resetSearchFilters(){
+    $("#qUserId").value = "";
+    $("#qUserName").value = "";
+    $("#qProvider").value = "";
+    $("#qAppKey").value = "";
+    $("#qEnabled").value = "";
+    state.filters = {};
   }
 
   function setVersion(version){
+    const versionChanged = state.version !== version;
     state.version = version;
-    document.body.setAttribute("data-theme", version);
     const meta = VERSION_META[version];
-    $("#pageTitle").textContent = `${meta.label}模型配置`;
-    $("#pageTag").textContent = meta.table;
+    $("#pageTitle").textContent = meta.label;
     $("#pageDesc").textContent = meta.desc;
     $("#viewVersionTag").textContent = meta.label;
     $("#formVersionTag").textContent = meta.label;
     $("#batchVersionTag").textContent = meta.label;
     $$(".side-item").forEach(btn => btn.classList.toggle("active", btn.dataset.version === version));
     $("#pageSizeSelect").value = String(state.pageSize);
+    if(versionChanged) resetSearchFilters();
     state.pageNo = 1;
     renderList();
   }
@@ -706,7 +701,7 @@
     const f = state.filters;
     if(f.userId) chips.push(`用户ID：${f.userId}`);
     if(f.userName) chips.push(`用户名：${f.userName}`);
-    if(f.providerCode) chips.push(`供应商：${providerLabel(f.providerCode)}`);
+    if(f.providerCode) chips.push(`生图模型：${providerLabel(f.providerCode)}`);
     if(f.appKey) chips.push(`appKey：${f.appKey}`);
     if(f.isEnabled === "1") chips.push("状态：已启用");
     if(f.isEnabled === "0") chips.push("状态：已停用");
@@ -715,7 +710,7 @@
 
   function renderFilters(){
     const chips = getActiveFilterChips();
-    $("#activeFilters").innerHTML = chips.map(x => `<span class="filter-chip">${x}</span>`).join("");
+    $("#activeFilters").innerHTML = chips.map(x => `<span class="filter-chip">${escapeHtml(x)}</span>`).join("");
     $("#activeFilters").style.display = chips.length ? "flex" : "none";
   }
 
@@ -783,21 +778,57 @@
   }
   function escapeAttr(str){ return escapeHtml(str); }
 
-  function openDrawer(type){
-    $(`#${type}Mask`).classList.add("show");
-    $(`#${type}Drawer`).classList.add("show");
+  function rememberFocus(){
+    const el = document.activeElement;
+    state.lastFocusedElement = el && el !== document.body && !el.closest('[aria-hidden="true"]') ? el : null;
   }
-  function closeDrawer(type){
+
+  function restoreFocus(){
+    const el = state.lastFocusedElement;
+    state.lastFocusedElement = null;
+    if(el && document.contains(el) && !el.closest('[aria-hidden="true"]')){
+      setTimeout(() => el.focus(), 0);
+    }
+  }
+
+  function openDrawer(type){
+    rememberFocus();
+    const drawer = $(`#${type}Drawer`);
+    $(`#${type}Mask`).classList.add("show");
+    drawer.classList.add("show");
+    drawer.setAttribute("aria-hidden", "false");
+    const closeBtn = drawer.querySelector("[data-close]");
+    if(closeBtn) setTimeout(() => closeBtn.focus(), 0);
+  }
+  function closeDrawer(type, shouldRestoreFocus = true){
     $(`#${type}Mask`).classList.remove("show");
-    $(`#${type}Drawer`).classList.remove("show");
+    const drawer = $(`#${type}Drawer`);
+    drawer.classList.remove("show");
+    drawer.setAttribute("aria-hidden", "true");
+    if(shouldRestoreFocus) restoreFocus();
   }
   function openDelete(){
+    rememberFocus();
     $("#deleteMask").classList.add("show");
     $("#deleteModal").classList.add("show");
+    $("#deleteModal").setAttribute("aria-hidden", "false");
+    setTimeout(() => $("#btnConfirmDelete").focus(), 0);
   }
-  function closeDelete(){
+  function closeDelete(shouldRestoreFocus = true){
     $("#deleteMask").classList.remove("show");
     $("#deleteModal").classList.remove("show");
+    $("#deleteModal").setAttribute("aria-hidden", "true");
+    if(shouldRestoreFocus) restoreFocus();
+  }
+
+  function closeTopLayerOnEsc(e){
+    if(e.key !== "Escape") return;
+    if($("#deleteModal").classList.contains("show")){
+      closeDelete();
+      return;
+    }
+    const openDrawerType = ["batch", "form", "view"].find(type => $(`#${type}Drawer`).classList.contains("show"));
+    if(openDrawerType) closeDrawer(openDrawerType);
   }
 
   function findById(id){
@@ -815,7 +846,7 @@
           <dt>ID</dt><dd class="mono">${item.id}</dd>
           <dt>用户ID</dt><dd class="mono">${item.userId}</dd>
           <dt>用户名</dt><dd>${escapeHtml(item.userName)}</dd>
-          <dt>供应商</dt><dd>${escapeHtml(providerLabel(item.providerCode))}</dd>
+          <dt>生图模型</dt><dd>${escapeHtml(providerLabel(item.providerCode))}</dd>
           <dt>appKey</dt><dd class="mono">${escapeHtml(item.appKey)}</dd>
           <dt>启用状态</dt><dd>${item.isEnabled === 1 ? "已启用" : "已停用"}</dd>
           <dt>创建时间</dt><dd>${escapeHtml(item.createdTime)}</dd>
@@ -1029,7 +1060,7 @@
     if(!userId){ setFieldError("fiUserId","用户ID不能为空"); hasError = true; }
     else if(!/^\d+$/.test(userId)){ setFieldError("fiUserId","用户ID 必须为整数"); hasError = true; }
 
-    if(!providerCode){ setFieldError("fiProvider","供应商不能为空"); hasError = true; }
+    if(!providerCode){ setFieldError("fiProvider","生图模型不能为空"); hasError = true; }
     if(!userName){ setFieldError("fiUserName","用户名不能为空"); hasError = true; }
     if(!appKey){ setFieldError("fiAppKey","appKey 不能为空"); hasError = true; }
 
@@ -1044,7 +1075,7 @@
     if(state.formMode === "add"){
       const exists = DB[state.version].some(x => String(x.userId) === String(userId) && String(x.providerCode) === String(providerCode));
       if(exists){
-        showToast("该用户下该模型配置已存在", "error");
+        showToast("该用户下该生图模型配置已存在", "error");
         return;
       }
       const list = DB[state.version];
@@ -1085,15 +1116,20 @@
     $("#bProvider").value = "";
     setBatchQuotaMode("structured");
     syncBatchQuotaPanelsFromObject({});
-    $("#batchQuotaErrorMsg").style.display = "none";
+    clearBatchErrors();
     openDrawer("batch");
   }
 
-  function submitBatch(){
+  function clearBatchErrors(){
     $("#fiBatchAppKey").classList.remove("field-error");
     const oldMsg = $("#fiBatchAppKey .field-error-msg");
     if(oldMsg) oldMsg.remove();
     $("#batchQuotaErrorMsg").style.display = "none";
+    $("#batchQuotaErrorMsg").textContent = "";
+  }
+
+  function submitBatch(){
+    clearBatchErrors();
 
     const appKey = $("#bAppKey").value.trim();
     const providerCode = $("#bProvider").value;
@@ -1139,7 +1175,7 @@
       return;
     }
     DB[state.version].splice(idx, 1);
-    closeDelete();
+    closeDelete(false);
     renderList();
     showToast("删除成功");
   }
@@ -1187,7 +1223,7 @@
     });
 
     $("#btnEditFromView").addEventListener("click", () => {
-      closeDrawer("view");
+      closeDrawer("view", false);
       if(state.viewingId != null) openEditForm(state.viewingId);
     });
 
@@ -1205,6 +1241,7 @@
       $(`#${type}Mask`).addEventListener("click", ()=>closeDrawer(type));
     });
     $("#deleteMask").addEventListener("click", closeDelete);
+    document.addEventListener("keydown", closeTopLayerOnEsc);
 
     $("#btnPrevPage").addEventListener("click", () => {
       if(state.pageNo > 1){ state.pageNo--; renderList(); }
