@@ -56,7 +56,13 @@
   .main{flex:1;min-width:0;max-width:1440px;padding:20px 24px 40px}
   .page-header{margin-bottom:16px}
   .page-title{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:700;color:var(--text-1)}
-  .page-desc{margin-top:8px;color:var(--text-2);line-height:1.7}
+  .page-desc{
+    margin-top:8px;display:inline-flex;align-items:center;flex-wrap:wrap;gap:8px;
+    padding:8px 12px;border:1px solid #ffd0c9;border-left:4px solid var(--danger);
+    border-radius:8px;background:#fff7f5;color:var(--text-2);line-height:1.6;
+  }
+  .page-desc-alert{color:var(--danger);font-weight:800}
+  .page-desc-muted{color:var(--text-2)}
   .page-note{
     margin-top:10px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:#fff;
     font-size:12.5px;color:var(--text-3);line-height:1.7;
@@ -302,7 +308,8 @@
           <span id="pageTitle">运营管理员配置</span>
         </div>
         <div class="page-desc" id="pageDesc">
-          由指定管理员统一配置，其他人请勿动谢谢，排序默认按更新时间倒排
+          <span class="page-desc-alert">由指定管理员统一配置，其他人请勿动谢谢，</span>
+          <span class="page-desc-muted">排序默认按更新时间倒排</span>
         </div>
       </section>
 
@@ -588,11 +595,13 @@
   const VERSION_META = {
     gen: {
       label: "美工管理员配置",
-      desc: "由指定管理员统一配置，其他人请勿动谢谢，排序默认按更新时间倒排"
+      notice: "由指定管理员统一配置，其他人请勿动谢谢，",
+      sortTip: "排序默认按更新时间倒排"
     },
     operation: {
       label: "运营管理员配置",
-      desc: "由指定管理员统一配置，其他人请勿动谢谢，排序默认按更新时间倒排"
+      notice: "由指定管理员统一配置，其他人请勿动谢谢，",
+      sortTip: "排序默认按更新时间倒排"
     }
   };
 
@@ -678,12 +687,24 @@
     state.filters = {};
   }
 
+  function renderPageDesc(meta){
+    const desc = $("#pageDesc");
+    desc.replaceChildren();
+    const notice = document.createElement("span");
+    notice.className = "page-desc-alert";
+    notice.textContent = meta.notice;
+    const sortTip = document.createElement("span");
+    sortTip.className = "page-desc-muted";
+    sortTip.textContent = meta.sortTip;
+    desc.append(notice, sortTip);
+  }
+
   function setVersion(version){
     const versionChanged = state.version !== version;
     state.version = version;
     const meta = VERSION_META[version];
     $("#pageTitle").textContent = meta.label;
-    $("#pageDesc").textContent = meta.desc;
+    renderPageDesc(meta);
     $("#viewVersionTag").textContent = meta.label;
     $("#formVersionTag").textContent = meta.label;
     $("#batchVersionTag").textContent = meta.label;
