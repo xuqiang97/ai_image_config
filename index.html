@@ -111,6 +111,7 @@
   .btn-danger:hover{background:var(--danger-soft);border-color:var(--danger)}
   .btn-text{height:auto;padding:0 6px;color:var(--brand);font-weight:600}
   .btn-text.danger{color:var(--danger)}
+  button:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
 
   .toolbar{
     padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;
@@ -335,8 +336,8 @@
           </div>
         </div>
         <div class="filter-actions">
-          <button class="btn btn-default" id="btnResetFilter">重置</button>
           <button class="btn btn-primary" id="btnSearch">查询</button>
+          <button class="btn btn-default" id="btnResetFilter">重置</button>
         </div>
       </section>
 
@@ -473,11 +474,11 @@
         </div>
 
         <div class="quota-panel" id="formQuotaJsonPanel" style="display:none">
-          <textarea class="input quota-json" id="fQuotaJson" placeholder='请输入合法 JSON，例如：&#10;{&#10;  "total": 20,&#10;  "scene": 3&#10;}'></textarea>
+          <textarea class="input quota-json" id="fQuotaJson" placeholder='请输入合法 JSON，例如：&#10;{&#10;  "total": 1000,&#10;  "scene": 3,&#10;  "closeUp": 2,&#10;  "sellPoint": 2,&#10;  "closeUpWhite": 0,&#10;  "aplus": 7&#10;}'></textarea>
         </div>
 
         <div class="hint">
-          quota 必须是合法 JSON 对象；不能为空对象；key 仅允许字母/数字/下划线，且必须以字母或下划线开头；value 必须为 0-20 的整数。
+          quota 必须是合法 JSON 对象；不能为空对象；key 仅允许字母/数字/下划线，且必须以字母或下划线开头；value 必须为非负整数，不限制上限。
         </div>
         <div class="field-error-msg" id="quotaErrorMsg" style="display:none"></div>
       </div>
@@ -546,11 +547,11 @@
         </div>
 
         <div class="quota-panel" id="batchQuotaJsonPanel" style="display:none">
-          <textarea class="input quota-json" id="bQuotaJson" placeholder='请输入合法 JSON，例如：&#10;{&#10;  "total": 20,&#10;  "scene": 3&#10;}'></textarea>
+          <textarea class="input quota-json" id="bQuotaJson" placeholder='请输入合法 JSON，例如：&#10;{&#10;  "total": 1000,&#10;  "scene": 3,&#10;  "closeUp": 2,&#10;  "sellPoint": 2,&#10;  "closeUpWhite": 0,&#10;  "aplus": 7&#10;}'></textarea>
         </div>
 
         <div class="hint">
-          批量更新中的 quota 同样必须满足合法 JSON 对象规则，提交后将整包覆盖命中记录。
+          批量更新中的 quota 同样必须满足合法 JSON 对象和非负整数规则，提交后将整包覆盖命中记录。
         </div>
         <div class="field-error-msg" id="batchQuotaErrorMsg" style="display:none"></div>
       </div>
@@ -575,13 +576,14 @@
 
 <script>
 (function(){
+  const PROVIDER_ALL_OPTION = { code: "", name: "全部" };
+  const PROVIDER_PLACEHOLDER_OPTION = { code: "", name: "请选择" };
   const PROVIDERS = [
-    { code: "", name: "全部" },
     { code: "1", name: "LinkFox（1）" },
     { code: "2", name: "自研（2）" },
-    { code: "3", name: "阿里（3）" },
-    { code: "4", name: "豆包（4）" }
+    { code: "3", name: "阿里绘蛙（3）" }
   ];
+  const QUOTA_DISPLAY_ORDER = ["total", "scene", "closeUp", "sellPoint", "closeUpWhite", "aplus"];
 
   const VERSION_META = {
     gen: {
@@ -638,9 +640,9 @@
     setTimeout(()=>el.remove(), 2600);
   }
 
-  function fillProviderSelect(select, includeAll){
-    const html = PROVIDERS
-      .filter(item => includeAll || item.code !== "")
+  function fillProviderSelect(select, emptyMode){
+    const emptyOption = emptyMode === "all" ? PROVIDER_ALL_OPTION : PROVIDER_PLACEHOLDER_OPTION;
+    const html = [emptyOption, ...PROVIDERS]
       .map(item => `<option value="${item.code}">${item.name}</option>`)
       .join("");
     select.innerHTML = html;
@@ -649,6 +651,22 @@
   function providerLabel(code){
     const found = PROVIDERS.find(x => String(x.code) === String(code));
     return found ? found.name : `未知生图模型（${code}）`;
+  }
+
+  function orderQuotaObject(quotaObj){
+    if(!quotaObj || typeof quotaObj !== "object" || Array.isArray(quotaObj)) return quotaObj;
+    const ordered = {};
+    QUOTA_DISPLAY_ORDER.forEach(key => {
+      if(Object.prototype.hasOwnProperty.call(quotaObj, key)) ordered[key] = quotaObj[key];
+    });
+    Object.keys(quotaObj).forEach(key => {
+      if(!Object.prototype.hasOwnProperty.call(ordered, key)) ordered[key] = quotaObj[key];
+    });
+    return ordered;
+  }
+
+  function quotaJson(quotaObj, space){
+    return JSON.stringify(orderQuotaObject(quotaObj), null, space);
   }
 
   function resetSearchFilters(){
@@ -732,7 +750,7 @@
         <td>${escapeHtml(providerLabel(r.providerCode))}</td>
         <td class="mono">${escapeHtml(r.appKey)}</td>
         <td>
-          <div class="json-inline" title='${escapeAttr(JSON.stringify(r.quota))}'>${escapeHtml(JSON.stringify(r.quota))}</div>
+          <div class="json-inline" title='${escapeAttr(quotaJson(r.quota))}'>${escapeHtml(quotaJson(r.quota))}</div>
         </td>
         <td>${r.isEnabled === 1 ? `<span class="badge badge-success"><span class="dot"></span>已启用</span>` : `<span class="badge badge-muted"><span class="dot"></span>已停用</span>`}</td>
         <td>${escapeHtml(r.updatedTime)}</td>
@@ -855,7 +873,7 @@
       </div>
       <div class="section">
         <div class="section-title">quota JSON</div>
-        <div class="code-block">${escapeHtml(JSON.stringify(item.quota, null, 2))}</div>
+        <div class="code-block">${escapeHtml(quotaJson(item.quota, 2))}</div>
       </div>
     `;
     openDrawer("view");
@@ -886,13 +904,14 @@
 
   function renderQuotaRows(containerId, quotaObj){
     const container = document.getElementById(containerId);
-    const entries = quotaObj && Object.keys(quotaObj).length
-      ? Object.entries(quotaObj)
+    const orderedQuota = orderQuotaObject(quotaObj);
+    const entries = orderedQuota && Object.keys(orderedQuota).length
+      ? Object.entries(orderedQuota)
       : [["", ""]];
     container.innerHTML = entries.map(([key, value], idx) => `
       <div class="quota-row" data-idx="${idx}">
         <input class="quota-key" value="${escapeAttr(key)}" placeholder="如 total / scene / closeUp" />
-        <input class="quota-value" value="${escapeAttr(value)}" placeholder="0-20 的整数" />
+        <input class="quota-value" value="${escapeAttr(value)}" placeholder="非负整数，不限上限" />
         <button type="button" class="quota-del" title="删除">✕</button>
       </div>
     `).join("");
@@ -904,10 +923,18 @@
     row.className = "quota-row";
     row.innerHTML = `
       <input class="quota-key" placeholder="如 total / scene / closeUp" />
-      <input class="quota-value" placeholder="0-20 的整数" />
+      <input class="quota-value" placeholder="非负整数，不限上限" />
       <button type="button" class="quota-del" title="删除">✕</button>
     `;
     container.appendChild(row);
+  }
+
+  function hasQuotaRowInput(containerId){
+    return Array.from(document.querySelectorAll(`#${containerId} .quota-row`)).some(row => {
+      const key = row.querySelector(".quota-key").value.trim();
+      const value = row.querySelector(".quota-value").value.trim();
+      return key || value;
+    });
   }
 
   function quotaRowsToObject(containerId){
@@ -922,13 +949,13 @@
       if(!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(key)) return { ok:false, message:`quota key "${key}" 格式非法` };
       if(obj.hasOwnProperty(key)) return { ok:false, message:`quota key "${key}" 重复` };
       if(rawValue === "") return { ok:false, message:`quota.${key} 不能为空` };
-      if(!/^\d+$/.test(rawValue)) return { ok:false, message:`quota.${key} 必须为 0-20 的整数` };
+      if(!/^\d+$/.test(rawValue)) return { ok:false, message:`quota.${key} 必须为非负整数` };
       const value = Number(rawValue);
-      if(!Number.isInteger(value) || value < 0 || value > 20) return { ok:false, message:`quota.${key} 必须为 0-20 的整数` };
+      if(!Number.isFinite(value)) return { ok:false, message:`quota.${key} 必须为非负整数` };
       obj[key] = value;
     }
     if(Object.keys(obj).length === 0) return { ok:false, message:"quota 不能为空对象" };
-    return { ok:true, value: obj };
+    return { ok:true, value: orderQuotaObject(obj) };
   }
 
   function validateQuotaObject(obj){
@@ -938,9 +965,84 @@
     for(const key of keys){
       if(!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(key)) return { ok:false, message:`quota key "${key}" 格式非法` };
       const value = obj[key];
-      if(!Number.isInteger(value) || value < 0 || value > 20) return { ok:false, message:`quota.${key} 必须为 0-20 的整数` };
+      if(typeof value !== "number" || !Number.isFinite(value) || !Number.isInteger(value) || value < 0) return { ok:false, message:`quota.${key} 必须为非负整数` };
     }
-    return { ok:true, value: obj };
+    return { ok:true, value: orderQuotaObject(obj) };
+  }
+
+  function findDuplicateJsonKey(text){
+    const stack = [];
+    let i = 0;
+    const isWs = ch => /\s/.test(ch);
+
+    function readStringLiteral(){
+      const start = i;
+      i++;
+      while(i < text.length){
+        const ch = text[i];
+        if(ch === "\\"){
+          i += 2;
+          continue;
+        }
+        i++;
+        if(ch === "\"") break;
+      }
+      return text.slice(start, i);
+    }
+
+    function nextNonWsIndex(from){
+      let j = from;
+      while(j < text.length && isWs(text[j])) j++;
+      return j;
+    }
+
+    while(i < text.length){
+      const ch = text[i];
+      if(isWs(ch)){ i++; continue; }
+
+      if(ch === "\""){
+        const literal = readStringLiteral();
+        const top = stack[stack.length - 1];
+        if(top && top.type === "object" && top.expectingKey){
+          const colonIndex = nextNonWsIndex(i);
+          if(text[colonIndex] === ":"){
+            let key = literal;
+            try{ key = JSON.parse(literal); }catch(e){}
+            if(top.keys.has(key)) return key;
+            top.keys.add(key);
+            top.expectingKey = false;
+          }
+        }
+        continue;
+      }
+
+      if(ch === "{"){
+        stack.push({ type:"object", keys:new Set(), expectingKey:true });
+        i++;
+        continue;
+      }
+      if(ch === "}"){
+        stack.pop();
+        i++;
+        continue;
+      }
+      if(ch === "["){
+        stack.push({ type:"array" });
+        i++;
+        continue;
+      }
+      if(ch === "]"){
+        stack.pop();
+        i++;
+        continue;
+      }
+      if(ch === ","){
+        const top = stack[stack.length - 1];
+        if(top && top.type === "object") top.expectingKey = true;
+      }
+      i++;
+    }
+    return null;
   }
 
   function getFormQuota(){
@@ -949,6 +1051,8 @@
     }
     const text = $("#fQuotaJson").value.trim();
     if(!text) return { ok:false, message:"quota 不能为空" };
+    const duplicateKey = findDuplicateJsonKey(text);
+    if(duplicateKey) return { ok:false, message:`quota key "${duplicateKey}" 重复` };
     try{
       const obj = JSON.parse(text);
       return validateQuotaObject(obj);
@@ -963,6 +1067,8 @@
     }
     const text = $("#bQuotaJson").value.trim();
     if(!text) return { ok:false, message:"quota 不能为空" };
+    const duplicateKey = findDuplicateJsonKey(text);
+    if(duplicateKey) return { ok:false, message:`quota key "${duplicateKey}" 重复` };
     try{
       const obj = JSON.parse(text);
       return validateQuotaObject(obj);
@@ -988,13 +1094,15 @@
   }
 
   function syncFormQuotaPanelsFromObject(obj){
-    renderQuotaRows("formQuotaRows", obj);
-    $("#fQuotaJson").value = JSON.stringify(obj || {}, null, 2);
+    const orderedObj = orderQuotaObject(obj || {});
+    renderQuotaRows("formQuotaRows", orderedObj);
+    $("#fQuotaJson").value = JSON.stringify(orderedObj, null, 2);
   }
 
   function syncBatchQuotaPanelsFromObject(obj){
-    renderQuotaRows("batchQuotaRows", obj);
-    $("#bQuotaJson").value = JSON.stringify(obj || {}, null, 2);
+    const orderedObj = orderQuotaObject(obj || {});
+    renderQuotaRows("batchQuotaRows", orderedObj);
+    $("#bQuotaJson").value = JSON.stringify(orderedObj, null, 2);
   }
 
   function openAddForm(){
@@ -1008,7 +1116,7 @@
     $("#fUserId").value = "";
     $("#fUserName").value = "";
     $("#fAppKey").value = "";
-    $("#fProvider").value = "1";
+    $("#fProvider").value = "";
     $("#fEnabled").checked = true;
     $("#enabledText").textContent = "已启用（isEnabled = 1）";
     ["fUserId","fProvider","fUserName"].forEach(id => {
@@ -1147,6 +1255,11 @@
 
     let rows = DB[state.version].filter(x => x.appKey === appKey);
     if(providerCode) rows = rows.filter(x => String(x.providerCode) === String(providerCode));
+    if(rows.length === 0){
+      setFieldError("fiBatchAppKey","未命中任何记录");
+      showToast("未命中任何记录", "error");
+      return;
+    }
 
     rows.forEach(item => {
       item.quota = quotaRes.value;
@@ -1155,8 +1268,7 @@
 
     closeDrawer("batch");
     renderList();
-    if(rows.length === 0) showToast("未命中任何记录", "error");
-    else showToast(`批量更新成功，影响 ${rows.length} 条记录`);
+    showToast(`批量更新成功，影响 ${rows.length} 条记录`);
   }
 
   function askDelete(id){
@@ -1293,7 +1405,17 @@
       if(btn.dataset.mode === state.formQuotaMode) return;
       if(btn.dataset.mode === "json"){
         const res = quotaRowsToObject("formQuotaRows");
-        $("#fQuotaJson").value = res.ok ? JSON.stringify(res.value, null, 2) : "";
+        if(!res.ok){
+          if(!hasQuotaRowInput("formQuotaRows")){
+            $("#fQuotaJson").value = "";
+            setFormQuotaMode("json");
+            return;
+          }
+          $("#quotaErrorMsg").textContent = res.message;
+          $("#quotaErrorMsg").style.display = "block";
+          return;
+        }
+        $("#fQuotaJson").value = JSON.stringify(res.value, null, 2);
       }else{
         const text = $("#fQuotaJson").value.trim();
         if(text){
@@ -1322,7 +1444,17 @@
       if(btn.dataset.mode === state.batchQuotaMode) return;
       if(btn.dataset.mode === "json"){
         const res = quotaRowsToObject("batchQuotaRows");
-        $("#bQuotaJson").value = res.ok ? JSON.stringify(res.value, null, 2) : "";
+        if(!res.ok){
+          if(!hasQuotaRowInput("batchQuotaRows")){
+            $("#bQuotaJson").value = "";
+            setBatchQuotaMode("json");
+            return;
+          }
+          $("#batchQuotaErrorMsg").textContent = res.message;
+          $("#batchQuotaErrorMsg").style.display = "block";
+          return;
+        }
+        $("#bQuotaJson").value = JSON.stringify(res.value, null, 2);
       }else{
         const text = $("#bQuotaJson").value.trim();
         if(text){
@@ -1353,9 +1485,9 @@
   }
 
   function init(){
-    fillProviderSelect($("#qProvider"), true);
-    fillProviderSelect($("#fProvider"), false);
-    fillProviderSelect($("#bProvider"), true);
+    fillProviderSelect($("#qProvider"), "all");
+    fillProviderSelect($("#fProvider"), "placeholder");
+    fillProviderSelect($("#bProvider"), "all");
     bindEvents();
     setVersion("operation");
   }
