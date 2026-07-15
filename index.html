@@ -486,7 +486,7 @@
         </div>
 
         <div class="quota-panel" id="formQuotaJsonPanel" style="display:none">
-          <textarea class="input quota-json" id="fQuotaJson" placeholder='请输入合法 JSON，例如：&#10;{&#10;  "total": 1000,&#10;  "scene": 3,&#10;  "closeUp": 2,&#10;  "sellPoint": 2,&#10;  "closeUpWhite": 0,&#10;  "aplus": 7&#10;}'></textarea>
+          <textarea class="input quota-json" id="fQuotaJson" placeholder='请输入合法 JSON，例如：&#10;{&#10;  "total": 1000,&#10;  "scene": 3,&#10;  "closeUpWhite": 0,&#10;  "closeUp": 2,&#10;  "sellPoint": 2,&#10;  "aplus": 7&#10;}'></textarea>
         </div>
 
         <div class="hint">
@@ -559,7 +559,7 @@
         </div>
 
         <div class="quota-panel" id="batchQuotaJsonPanel" style="display:none">
-          <textarea class="input quota-json" id="bQuotaJson" placeholder='请输入合法 JSON，例如：&#10;{&#10;  "total": 1000,&#10;  "scene": 3,&#10;  "closeUp": 2,&#10;  "sellPoint": 2,&#10;  "closeUpWhite": 0,&#10;  "aplus": 7&#10;}'></textarea>
+          <textarea class="input quota-json" id="bQuotaJson" placeholder='请输入合法 JSON，例如：&#10;{&#10;  "total": 1000,&#10;  "scene": 3,&#10;  "closeUpWhite": 0,&#10;  "closeUp": 2,&#10;  "sellPoint": 2,&#10;  "aplus": 7&#10;}'></textarea>
         </div>
 
         <div class="hint">
@@ -595,7 +595,7 @@
     { code: "2", name: "自研（2）" },
     { code: "3", name: "阿里绘蛙（3）" }
   ];
-  const QUOTA_DISPLAY_ORDER = ["total", "scene", "closeUp", "sellPoint", "closeUpWhite", "aplus"];
+  const QUOTA_DISPLAY_ORDER = ["total", "scene", "closeUpWhite", "closeUp", "sellPoint", "aplus"];
 
   const VERSION_META = {
     gen: {
@@ -612,11 +612,11 @@
 
   const DB = {
     gen: [
-      { id: 11, userId: 7001, userName: "张晨", providerCode: 1, appKey: "GEN-APPKEY-001", quota: { total: 18, scene: 12, sellPoint: 6, closeUp: 3 }, isEnabled: 1, createdTime: "2026-03-10 10:00:00", updatedTime: "2026-04-18 11:10:12" },
+      { id: 11, userId: 7001, userName: "张晨", providerCode: 1, appKey: "GEN-APPKEY-001", quota: { total: 18, scene: 12, closeUp: 3, sellPoint: 6 }, isEnabled: 1, createdTime: "2026-03-10 10:00:00", updatedTime: "2026-04-18 11:10:12" },
       { id: 12, userId: 7002, userName: "李萍", providerCode: 3, appKey: "GEN-APPKEY-002", quota: { total: 16, scene: 8, closeUpWhite: 2 }, isEnabled: 0, createdTime: "2026-03-11 09:20:00", updatedTime: "2026-04-16 15:22:35" }
     ],
     operation: [
-      { id: 1, userId: 7680, userName: "梁凯欣", providerCode: 1, appKey: "202603191484189022539608064", quota: { total: 1000, scene: 3, closeUp: 2, sellPoint: 2, closeUpWhite: 0, aplus: 7 }, isEnabled: 1, createdTime: "2026-03-19 00:00:00", updatedTime: "2026-04-20 11:31:54" },
+      { id: 1, userId: 7680, userName: "梁凯欣", providerCode: 1, appKey: "202603191484189022539608064", quota: { total: 1000, scene: 3, closeUpWhite: 0, closeUp: 2, sellPoint: 2, aplus: 7 }, isEnabled: 1, createdTime: "2026-03-19 00:00:00", updatedTime: "2026-04-20 11:31:54" },
       { id: 2, userId: 7691, userName: "陈思远", providerCode: 2, appKey: "202603191484189022539608065", quota: { total: 60, scene: 2, sellPoint: 2, aplus: 4 }, isEnabled: 1, createdTime: "2026-03-20 00:00:00", updatedTime: "2026-04-19 09:11:20" },
       { id: 3, userId: 7710, userName: "王雨桐", providerCode: 1, appKey: "202603191484189022539608064", quota: { total: 12, scene: 1, closeUp: 1 }, isEnabled: 0, createdTime: "2026-03-22 00:00:00", updatedTime: "2026-04-17 20:09:08" }
     ]
