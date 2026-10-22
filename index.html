@@ -141,9 +141,10 @@
   .tbl th{font-size:12.5px;color:var(--text-2);font-weight:700;background:#fafbfc;position:sticky;top:0;z-index:1}
   .tbl tbody tr:hover{background:var(--brand-soft-2)}
   .tbl .id-cell,.tbl .mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;color:var(--text-2)}
+  .tbl .appkey-cell{min-width:230px;max-width:230px;white-space:normal;word-break:break-all;line-height:1.5}
   .tbl .username-cell{font-weight:600;color:var(--text-1)}
   .json-inline{
-    max-width:620px;padding:8px 10px;border-radius:6px;
+    min-width:240px;max-width:620px;padding:8px 10px;border-radius:6px;
     background:#f7f8fa;border:1px solid var(--border);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--text-2);
     white-space:normal;word-break:break-all;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
   }
@@ -774,7 +775,7 @@
         <td class="mono">${r.userId}</td>
         <td class="username-cell">${escapeHtml(r.userName)}</td>
         <td>${escapeHtml(providerLabel(r.providerCode))}</td>
-        <td class="mono">${escapeHtml(r.appKey)}</td>
+        <td class="mono appkey-cell">${escapeHtml(r.appKey)}</td>
         <td>
           <div class="json-inline" title='${escapeAttr(quotaJson(r.quota))}'>${escapeHtml(quotaJson(r.quota))}</div>
         </td>
